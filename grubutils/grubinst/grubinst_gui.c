@@ -51,7 +51,6 @@ int           p_index[MAX_PARTS + 1];
 char          btnInstName[32] = "Install";
 BOOLEAN       AlreadyScanned  = TRUE;
 HDEVNOTIFY    usbnotification;
-HBRUSH        status_brush;
 COLORREF      status_color;
 char          det_ver[64]    = "";
 BOOLEAN       isWin6orabove  = FALSE;
@@ -3954,17 +3953,14 @@ BOOL CALLBACK DialogMainProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam)
   }
   case WM_CTLCOLORSTATIC:
   {
-    HDC hdcStatic = (HDC) wParam;
-    if ((HWND) lParam != GetDlgItem(hWnd, IDC_STATUS))
+    if ((HWND) lParam == GetDlgItem(hWnd, IDC_STATUS))
     {
+      HDC hdcStatic = (HDC) wParam;
       SetBkColor(hdcStatic, GetSysColor(COLOR_BTNFACE));
-      break;
+      SetTextColor(hdcStatic, status_color);
     }
-    SetTextColor(hdcStatic, status_color);
-    SetBkColor(hdcStatic, GetSysColor(COLOR_BTNFACE));
-    if (status_brush == NULL)
-      status_brush = GetSysColorBrush(COLOR_BTNFACE);
-    return (INT_PTR) status_brush;
+    else return DefWindowProc(hWnd, wMsg, wParam, lParam);
+    break;
   }
   case WM_CLOSE:
   {
